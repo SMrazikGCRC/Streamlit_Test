@@ -82,7 +82,7 @@ with DCcol2:
 
 st.header("Notes")
 
-notes = st.textinput("Notes")
+notes = st.text_input("Notes")
 
 st.header("Equipment")
 
