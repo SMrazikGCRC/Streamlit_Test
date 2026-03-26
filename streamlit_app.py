@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from openpyxl import load_workbook
 import datetime
+from io import BytesIO
 
 
 ######## Generate lists to be used for drop downs later
@@ -266,4 +267,13 @@ if st.button("Generate Excel"):
         sheet[f"D{excel_row}"] = row["Hours"]
         sheet[f"E{excel_row}"] = row["Equipment Number"]
         
-    wb.save(filename)
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+### Download Button
+st.download_button(
+    label="Download Estimate",
+    data=output,
+    file_name=filename,
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
