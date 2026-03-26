@@ -1,11 +1,16 @@
 ####### IMPORTS
 import streamlit as st
 import pandas as pd
+from openpyxl import load_workbook
+import datetime
 
 
 ######## Generate lists to be used for drop downs later
 Estimate_Types = ["Limestone","Paving Overlay","Aprons","Ditching","Milling","Shoulders","Spot Repair","Mowing"]
-Townships = ["Argentine Township","Atlas Township","Clayton Township","Davison Township","Fenton Township","Flint Township","Flushing Township","Forest Township","Gaines Township","Genesee Township","Grand Blanc Township","Montrose Township","Mt. Morrish Township","Mundy Township","Richfield Township","Thetford Township","Vienna Township"]
+Townships = ["Argentine Township","Atlas Township","Clayton Township","Davison Township","Fenton Township",
+             "Flint Township","Flushing Township","Forest Township","Gaines Township","Genesee Township",
+             "Grand Blanc Township","Montrose Township","Mt. Morris Township","Mundy Township",
+             "Richfield Township","Thetford Township","Vienna Township"]
 Districts = ["Atlas","Linden","Metro","Montrose","Otisville","Swartz Creek"]
 PaymentMethod_List = ["GCRC/Township","100% Township","CBDG","Neighborhood Funds"]
 
@@ -213,23 +218,52 @@ edited_equipment = st.data_editor(
 
 ############ GENERATE EXCEL
 
+st.divider()
+
+### Load Workbook
+
+timestamp = datetime.datetime.now().strftime("%Y%m%d")
+
+title_road = road.replace(" ", "_").replace("/", "")
+
+filename = f"{title_road}_{Estimate}_{timestamp}.xlsx"
 
 if st.button("Generate Excel"):
+    wb = load_workbook("Estimate_Template.xlsx")
+    sheet = wb["Sheet1"]
+    sheet["B1"] = Estimate
+    sheet["B2"] = Name
+    sheet["B3"] = Date.strftime("%m/%d/%Y")
+    sheet["B4"] = district
+    sheet["B5"] = township
+    sheet["B6"] = paymentmethod
+    sheet["B7"] = road
+    sheet["B8"] = road_limits
+    sheet["B9"] = comments
+    sheet["B10"] = Dimensions_length
+    sheet["B11"] = Dimensions_width
+    sheet["B12"] = Dimensions_depth
+    sheet["B13"] = DaysWorked
+    sheet["B14"] = ROperatorCount
+    sheet["B15"] = RForemanCount
+    sheet["B16"] = RoperatorHours
+    sheet["B17"] = RForemanHours
+    sheet["B18"] = OTOperatorCount
+    sheet["B19"] = OTForemanCount
+    sheet["B20"] = OTOperatorHours
+    sheet["B21"] = OTFormeanHours
+    sheet["B22"] = gallons
+    sheet["B23"] = deliveries
+    sheet["B24"] = notes
     
-    data = {
-        "Road Name": [road],
-        "Township": [township],
+    start_row = 26
 
-    }
+    for i, row in edited_equipment.iterrows():
+        excel_row = start_row + i
 
-    df = pd.DataFrame(data)
-
-    file = "project.xlsx"
-    df.to_excel(file, index=False)
-
-    with open(file, "rb") as f:
-        st.download_button(
-            "Download Excel",
-            f,
-            file_name="project.xlsx"
-        )
+        sheet[f"B{excel_row}"] = row["Equipment"]
+        sheet[f"C{excel_row}"] = row["Quantity"]
+        sheet[f"D{excel_row}"] = row["Hours"]
+        sheet[f"E{excel_row}"] = row["Equipment Number"]
+        
+    wb.save(filename)
