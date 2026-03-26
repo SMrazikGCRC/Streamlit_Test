@@ -208,7 +208,7 @@ if Estimate != st.session_state.last_estimate:
 edited_equipment = st.data_editor(
     st.session_state.equipment_df,
     num_rows="dynamic",   #allows adding new equipment
-    use_container_width=True
+    width=True
 )
 
 
