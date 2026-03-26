@@ -267,9 +267,9 @@ if st.button("Generate Excel"):
         sheet[f"D{excel_row}"] = row["Hours"]
         sheet[f"E{excel_row}"] = row["Equipment Number"]
         
-        output = BytesIO()
-        wb.save(output)
-        output.seek(0)
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
         
 ### Download Button
 st.download_button(
