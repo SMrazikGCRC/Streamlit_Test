@@ -272,8 +272,8 @@ if st.button("Generate Excel"):
     output.seek(0)
         
 ### Download Button
-st.download_button(
-    label="Download Estimate",
-    data=output,
-    file_name=filename,
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    st.download_button(
+        label="Download Estimate",
+        data=output,
+        file_name=filename,
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
